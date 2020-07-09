@@ -117,7 +117,6 @@ class MainWindow(QMainWindow):
         speed=self.speed.text()
         self.intervals.append([beg,end])
         self.speed_lst.append(speed)
-        print(self.intervals)
         self.set_text()
 
     def save_file(self):
