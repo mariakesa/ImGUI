@@ -33,6 +33,9 @@ class MainWindow(QMainWindow):
 
         self.make_text_box()
 
+        self.intervals=[]
+        self.fps_lst=[]
+
 
 
     def make_seconds_input(self):
@@ -70,7 +73,7 @@ class MainWindow(QMainWindow):
         self.l0.addWidget(self.fps, 4, 17, 1, 2)
 
         self.add_btn = QtGui.QPushButton("Add interval", self)
-        #self.add_btn.clicked.connect(lambda: self.open_file())
+        self.add_btn.clicked.connect(lambda: self.add_interval())
         self.l0.addWidget(self.add_btn, 4, 20, 1, 2)
 
 
@@ -97,6 +100,22 @@ class MainWindow(QMainWindow):
         self.selected = QtWidgets.QTextBrowser()
         self.selected.setGeometry(QtCore.QRect(10, 90, 331, 111))
         self.l0.addWidget(self.selected, 6, 1, 10, 20)
+
+    def set_text(self):
+        txt=''
+        for interval in range(len(self.intervals)):
+            txt+='\n'+'Interval: '+self.intervals[interval][0]+', '+self.intervals[interval][1]+', FPS '+self.fps_lst[interval]
+        self.selected.setText(txt)
+
+    def add_interval(self):
+        beg=self.seconds_begin.text()
+        end=self.seconds_end.text()
+        fps=self.fps.text()
+        self.intervals.append([beg,end])
+        self.fps_lst.append(fps)
+        print(self.intervals)
+        self.set_text()
+
 
 app=QApplication(sys.argv)
 
