@@ -121,7 +121,6 @@ class MainWindow(QMainWindow):
         self.set_text()
 
     def save_file(self):
-        print('boom')
         movie_length=self.clip.duration
         self.intervals.sort(key=lambda x: int(x[0]))
         bookmark=0
@@ -132,15 +131,12 @@ class MainWindow(QMainWindow):
             if bookmark<float(clip[0]):
                 result.append([bookmark, float(clip[0])])
                 clips.append(self.clip.subclip(bookmark, float(clip[0])))
-                print('bkm',bookmark)
             result.append([float(clip[0]),float(clip[1])])
             bookmark=float(clip[1])
             mod_clp=self.clip.subclip(float(clip[0]),float(clip[1]))
             mod_clp=mod_clp.speedx(factor=float(self.speed_lst[i]))
             clips.append(mod_clp)
             i+=1
-        print(result)
-        print(clips)
         if bookmark<movie_length:
             result.append([bookmark,movie_length])
             clips.append(self.clip.subclip(bookmark,movie_length))
