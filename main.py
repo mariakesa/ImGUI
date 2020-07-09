@@ -29,7 +29,11 @@ class MainWindow(QMainWindow):
 
         self.make_file_loader()
 
+        self.make_file_saver()
+
         self.make_text_box()
+
+
 
     def make_seconds_input(self):
         self.begin_interval = QtGui.QLabel("Beginning:")
@@ -54,10 +58,20 @@ class MainWindow(QMainWindow):
         self.seconds_end.setFixedWidth(35)
         self.l0.addWidget(self.seconds_end, 4, 10, 1, 2)
 
+        self.add_btn = QtGui.QPushButton("Add interval", self)
+        #self.add_btn.clicked.connect(lambda: self.open_file())
+        self.l0.addWidget(self.add_btn, 4, 12, 1, 2)
+
+
     def make_file_loader(self):
         self.btn = QtGui.QPushButton("Select File...", self)
         self.btn.clicked.connect(lambda: self.open_file())
         self.l0.addWidget(self.btn, 1, 1, 1, 2)
+
+    def make_file_saver(self):
+        self.btn_save = QtGui.QPushButton("Save File...", self)
+        #self.btn.clicked.connect(lambda: self.open_file())
+        self.l0.addWidget(self.btn_save, 1, 4, 1, 2)
 
 
     def open_file(self):
