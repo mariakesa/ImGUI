@@ -129,14 +129,14 @@ class MainWindow(QMainWindow):
         clips=[]
         i=0
         for clip in self.intervals:
-            if bookmark<int(clip[0]):
-                result.append([bookmark, int(clip[0])])
-                clips.append(self.clip.subclip(bookmark, int(clip[0])))
+            if bookmark<float(clip[0]):
+                result.append([bookmark, float(clip[0])])
+                clips.append(self.clip.subclip(bookmark, float(clip[0])))
                 print('bkm',bookmark)
-            result.append([int(clip[0]),int(clip[1])])
-            bookmark=int(clip[1])
-            mod_clp=self.clip.subclip(int(clip[0]),int(clip[1]))
-            mod_clp=mod_clp.speedx(factor=int(self.speed_lst[i]))
+            result.append([float(clip[0]),float(clip[1])])
+            bookmark=float(clip[1])
+            mod_clp=self.clip.subclip(float(clip[0]),float(clip[1]))
+            mod_clp=mod_clp.speedx(factor=float(self.speed_lst[i]))
             clips.append(mod_clp)
             i+=1
         print(result)
