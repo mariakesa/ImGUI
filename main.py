@@ -121,7 +121,7 @@ class MainWindow(QMainWindow):
 
     def save_file(self):
         movie_length=self.clip.duration
-        self.intervals.sort(key=lambda x: int(x[0]))
+        self.intervals.sort(key=lambda x: float(x[0]))
         bookmark=0
         result=[]
         clips=[]
