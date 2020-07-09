@@ -58,9 +58,20 @@ class MainWindow(QMainWindow):
         self.seconds_end.setFixedWidth(35)
         self.l0.addWidget(self.seconds_end, 4, 10, 1, 2)
 
+        self.fps_txt = QtGui.QLabel("Frames per second:")
+        self.fps_txt.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        #self.end_interval.setStyleSheet("color: white;")
+        self.fps_txt.setFont(QtGui.QFont("Arial", 10, QtGui.QFont.Bold))
+        self.l0.addWidget(self.fps_txt,  4, 14, 1, 2)
+
+        self.fps=QtGui.QLineEdit()
+        self.fps.setText("10")
+        self.fps.setFixedWidth(35)
+        self.l0.addWidget(self.fps, 4, 17, 1, 2)
+
         self.add_btn = QtGui.QPushButton("Add interval", self)
         #self.add_btn.clicked.connect(lambda: self.open_file())
-        self.l0.addWidget(self.add_btn, 4, 12, 1, 2)
+        self.l0.addWidget(self.add_btn, 4, 20, 1, 2)
 
 
     def make_file_loader(self):
