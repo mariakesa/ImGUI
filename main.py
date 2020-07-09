@@ -15,6 +15,8 @@ from moviepy.editor import VideoFileClip
 from PyQt5.QtWidgets import (QMainWindow, QTextEdit,
                              QAction, QFileDialog, QApplication)
 
+from moviepy.editor import *
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -34,7 +36,7 @@ class MainWindow(QMainWindow):
         self.make_text_box()
 
         self.intervals=[]
-        self.fps_lst=[]
+        self.speed_lst=[]
 
 
 
@@ -61,16 +63,16 @@ class MainWindow(QMainWindow):
         self.seconds_end.setFixedWidth(35)
         self.l0.addWidget(self.seconds_end, 4, 10, 1, 2)
 
-        self.fps_txt = QtGui.QLabel("Frames per second:")
-        self.fps_txt.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        self.speed_txt = QtGui.QLabel("Speed x:")
+        self.speed_txt.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
         #self.end_interval.setStyleSheet("color: white;")
-        self.fps_txt.setFont(QtGui.QFont("Arial", 10, QtGui.QFont.Bold))
-        self.l0.addWidget(self.fps_txt,  4, 14, 1, 2)
+        self.speed_txt.setFont(QtGui.QFont("Arial", 10, QtGui.QFont.Bold))
+        self.l0.addWidget(self.speed_txt,  4, 14, 1, 2)
 
-        self.fps=QtGui.QLineEdit()
-        self.fps.setText("10")
-        self.fps.setFixedWidth(35)
-        self.l0.addWidget(self.fps, 4, 17, 1, 2)
+        self.speed=QtGui.QLineEdit()
+        self.speed.setText("10")
+        self.speed.setFixedWidth(35)
+        self.l0.addWidget(self.speed, 4, 17, 1, 2)
 
         self.add_btn = QtGui.QPushButton("Add interval", self)
         self.add_btn.clicked.connect(lambda: self.add_interval())
@@ -84,7 +86,7 @@ class MainWindow(QMainWindow):
 
     def make_file_saver(self):
         self.btn_save = QtGui.QPushButton("Save File...", self)
-        #self.btn.clicked.connect(lambda: self.open_file())
+        self.btn_save.clicked.connect(lambda: self.save_file())
         self.l0.addWidget(self.btn_save, 1, 4, 1, 2)
 
 
@@ -96,6 +98,8 @@ class MainWindow(QMainWindow):
             #f = open(fname[0], 'r')
             self.clip = VideoFileClip(fname[0])
 
+        print('FPS ',self.clip.fps)
+
     def make_text_box(self):
         self.selected = QtWidgets.QTextBrowser()
         self.selected.setGeometry(QtCore.QRect(10, 90, 331, 111))
@@ -104,17 +108,47 @@ class MainWindow(QMainWindow):
     def set_text(self):
         txt=''
         for interval in range(len(self.intervals)):
-            txt+='\n'+'Interval: '+self.intervals[interval][0]+', '+self.intervals[interval][1]+', FPS '+self.fps_lst[interval]
+            txt+='\n'+'Interval: '+self.intervals[interval][0]+', '+self.intervals[interval][1]+', Speed '+self.speed_lst[interval]
         self.selected.setText(txt)
 
     def add_interval(self):
         beg=self.seconds_begin.text()
         end=self.seconds_end.text()
-        fps=self.fps.text()
+        speed=self.speed.text()
         self.intervals.append([beg,end])
-        self.fps_lst.append(fps)
+        self.speed_lst.append(speed)
         print(self.intervals)
         self.set_text()
+
+    def save_file(self):
+        print('boom')
+        movie_length=self.clip.duration
+        self.intervals.sort(key=lambda x: int(x[0]))
+        bookmark=0
+        result=[]
+        clips=[]
+        i=0
+        for clip in self.intervals:
+            if bookmark<int(clip[0]):
+                result.append([bookmark, int(clip[0])])
+                clips.append(self.clip.subclip(bookmark, int(clip[0])))
+                print('bkm',bookmark)
+            result.append([int(clip[0]),int(clip[1])])
+            bookmark=int(clip[1])
+            mod_clp=self.clip.subclip(int(clip[0]),int(clip[1]))
+            mod_clp=mod_clp.speedx(factor=int(self.speed_lst[i]))
+            clips.append(mod_clp)
+            i+=1
+        print(result)
+        print(clips)
+        if bookmark<movie_length:
+            result.append([bookmark,movie_length])
+            clips.append(self.clip.subclip(bookmark,movie_length))
+        #self.total_clp=[]
+        #for interval in range(len(self.intervals)):
+            #new_clip = self.clip.subclip(self.intervals[interval][0],self.interval[1])
+        final = concatenate_videoclips(clips)
+        final.write_videofile("new_clip.mov", codec = "libx264")
 
 
 app=QApplication(sys.argv)
